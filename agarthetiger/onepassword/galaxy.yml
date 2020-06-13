@@ -1,0 +1,14 @@
+namespace: agarthetiger
+name: onepassword
+version: 0.1.0
+readme: README.md
+authors:
+- Andrew Garner @agarthetiger
+description: Ansible Collection for using 1Password as a dynamic inventory source
+license_file: 'LICENSE'
+tags: []
+dependencies: {}
+repository: https://github.com/agarthetiger/ansible-collection-onepassword
+# documentation: http://docs.example.com
+# homepage: http://example.com
+issues: https://github.com/agarthetiger/ansible-collection-onepassword/issues
