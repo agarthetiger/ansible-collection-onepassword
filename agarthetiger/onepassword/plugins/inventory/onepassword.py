@@ -1,3 +1,5 @@
+# https://github.com/ansible/ansible/blob/stable-2.9/lib/ansible/plugins/lookup/onepassword.py
+# used as a starting point
 # Copyright: (c) 2018, Scott Buchanan <sbuchanan@ri.pn>
 # Copyright: (c) 2016, Andrew Zenk <azenk@umn.edu> (lastpass.py used as starting point)
 # Copyright: (c) 2018, Ansible Project
@@ -15,33 +17,52 @@ ANSIBLE_METADATA = {
 DOCUMENTATION = '''
 name: onepassword
 plugin_type: inventory
+author:
+- Andrew Garner <@agarthetiger>
+
 short_description: 1Password dynamic inventory source
+
 description:
-- C(onepassword) wraps the C(op) command line utility to fetch specific field values from 1Password.
+- C(onepassword) wraps the C(op) command line utility to fetch hostnames/IPs from 1Password.
+- Uses onepassword-inventory.(yml|yaml) YAML configuration file to set parameter values
+
 requirements:
 - C(op) 1Password command line utility. See U(https://support.1password.com/command-line/)
+
 options:
+    plugin:
+        description: Token that ensures this is a source file for the 'onepassword' plugin.
+        required: True
+        choices: ['onepassword']
     vault:
         description: Vault containing the servers to retrieve (case-insensitive). If absent will search all vaults.
         required: False
         type: string
     master_password:
-        description: The password used to unlock the specified vault.
-        aliases: ['vault_password']
+        description: The password used to unlock the specified vault. Only required when not already signed in via the C(op) CLI.
+        required: False
+        type: string
     subdomain:
-        description: The 1Password subdomain to authenticate against.
+        description: The 1Password subdomain to authenticate against. Only required when signing in for the first time and never signed in via the C(op) CLI.
+        required: False
+        type: string
     username:
-        description: The username used to sign in.
+        description: The username used to sign in. Only required when signing in for the first time and never signed in via the C(op) CLI.
+        required: False
+        type: string
     secret_key:
-        description: The secret key used when performing an initial sign in.
+        description: The secret key used when performing an initial sign in. Only required when signing in for the first time and never signed in via the C(op) CLI.
+        required: False
+        type: string
 notes:
 - This script will use an existing 1Password session if one exists. If not, and you have already
   performed an initial sign in (meaning C(~/.op/config exists)), then only the C(master_password) is required.
   You may optionally specify C(subdomain) in this scenario, otherwise the last used subdomain will be used by C(op).
 - This script can perform an initial login by providing C(subdomain), C(username), C(secret_key), and C(master_password).
 - Due to the B(very) sensitive nature of these credentials, it is B(highly) recommended that you only pass in the minimal credentials
-  needed at any given time. Also, store these credentials in an Ansible Vault using a key that is equal to or greater in strength
-  to the 1Password master password.
+  needed at any given time. Ideally sign in to the op CLI before using this as an inventory source. 
+- Suggest a specific automation user is created with access to only the vault containing the inventory required. Also, 
+  store the user credentials in an Ansible Vault using a key that is equal to or greater in strength to the 1Password master password.
 - Tested with C(op) version 1.0.0
 '''
 
