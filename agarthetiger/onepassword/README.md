@@ -30,7 +30,27 @@ Create a file called ansible.cfg in the same folder as you are running ansible f
 inventory_plugins=~/.ansible/collections/ansible_collections/agarthetiger/onepassword/plugins/inventory
 ```
 
-To use this plugin as an inventory source you must already have the 1Password [op] CLI tool installed on the machine you are running Ansible from. Follow the [installation instructions](https://support.1password.com/command-line-getting-started/) provided by 1password. 
+The inventory plugin needs a configuration file in order to use this plugin. This is what you will point Ansible to when using 1Password as an inventory source. Create a file called onepassword-inventory.yml with the following contents.
+
+```yaml
+plugin: onepassword
+# Optionally specify a single 1Password Vault to look for Servers in
+# vault: homelab
+```
+
+To run this inventory plugin you can use `ansible-inventory` to test the installation and configuration. 
+
+```sh
+ansible-inventory -i onepassword-inventory.yml --list
+```
+
+To execute a playbook using this as an inventory source pass the yaml file to `ansible-playbook`. 
+
+```sh
+ansible-playbook -i onepassword-inventory.yml ...
+```
+
+To use this plugin as an inventory source you must also have the 1Password [op] CLI tool installed on the machine you are running Ansible from. Follow the [installation instructions](https://support.1password.com/command-line-getting-started/) provided by 1password. 
 
 It is highly recommended that you create a 1Password user for use with Ansible, create a Vault which contains only your inventory and grant that user account access to this Vault only.
 
